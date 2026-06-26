@@ -17,12 +17,10 @@ https://github.com/mlnima/computer-use-windows.git
 
 ## Transports
 
-- STDIO: `computer-use-windows --transport stdio`
-- Streamable HTTP: `computer-use-windows --transport mcp`
-- SSE: `computer-use-windows --transport sse`
-- Both HTTP transports on one server: `computer-use-windows --transport all`
+- Server: `npm start`
+- STDIO: `node <package-root>\dist\index.js --transport stdio`
 
-Every server transport mode exposes both `/mcp` and `/sse` on the same host, port, and auth token. STDIO is unchanged.
+The start script runs one server that exposes both `/mcp` and `/sse` on the same host, port, and auth token. STDIO uses the built `dist\index.js` file directly.
 
 The Streamable HTTP endpoint is:
 
@@ -48,8 +46,8 @@ STDIO:
 {
   "mcpServers": {
     "computer-use-windows": {
-      "command": "computer-use-windows",
-      "args": ["--transport", "stdio"]
+      "command": "node",
+      "args": ["<package-root>\\dist\\index.js", "--transport", "stdio"]
     }
   }
 }
