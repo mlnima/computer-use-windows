@@ -14,3 +14,9 @@ export const maxInlineTextBytes = 64 * 1024;
 
 export const defaultRuntimeDir = () =>
   path.join(os.homedir(), '.computer-use-windows');
+
+export const defaultLogDir = () =>
+  path.join(defaultRuntimeDir(), 'logs');
+
+export const defaultScreenshotsDir = () =>
+  path.join(defaultRuntimeDir(), 'screenshots');

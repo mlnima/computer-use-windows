@@ -5,13 +5,15 @@ import type { RuntimeState } from '../state';
 import { addTextResource } from '../resources/store';
 
 export const ensureTraceDirs = (config: ServerConfig) => {
-  for (const dir of ['logs', 'traces', 'screenshots', 'terminal', 'resources', 'clipboard']) {
+  fs.mkdirSync(config.logDir, { recursive: true });
+  fs.mkdirSync(config.screenshotsDir, { recursive: true });
+  for (const dir of ['traces', 'terminal', 'resources', 'clipboard']) {
     fs.mkdirSync(path.join(config.runtimeDir, dir), { recursive: true });
   }
 };
 
 const logPath = (config: ServerConfig) =>
-  path.join(config.runtimeDir, 'logs', `${new Date().toISOString().slice(0, 10)}.jsonl`);
+  path.join(config.logDir, `${new Date().toISOString().slice(0, 10)}.jsonl`);
 
 const redact = (value: string) =>
   value
@@ -28,11 +30,11 @@ export const appendLog = (config: ServerConfig, entry: Record<string, unknown>) 
 
 export const listLogFiles = (config: ServerConfig) => {
   ensureTraceDirs(config);
-  return fs.readdirSync(path.join(config.runtimeDir, 'logs'))
+  return fs.readdirSync(config.logDir)
     .filter((entry) => entry.endsWith('.jsonl'))
     .sort()
     .reverse()
-    .map((entry) => ({ id: entry, path: path.join(config.runtimeDir, 'logs', entry) }));
+    .map((entry) => ({ id: entry, path: path.join(config.logDir, entry) }));
 };
 
 export const exportTrace = (state: RuntimeState, config: ServerConfig) => {

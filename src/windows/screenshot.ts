@@ -40,7 +40,7 @@ export const captureScreenshotResource = async (
     ? raw
     : await image.resize({ fit: 'inside', height: config.screenshotMaxSide, width: config.screenshotMaxSide }).jpeg({ quality: 80 }).toBuffer();
   const mimeType = rawFits ? 'image/png' : 'image/jpeg';
-  const file = path.join(config.runtimeDir, 'screenshots', `${Date.now()}${rawFits ? '.png' : '.jpg'}`);
+  const file = path.join(config.screenshotsDir, `${Date.now()}${rawFits ? '.png' : '.jpg'}`);
   fs.writeFileSync(file, buffer);
   return addBytesResource(state, path.basename(file), mimeType, buffer, 'screenshots');
 };

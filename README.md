@@ -100,9 +100,12 @@ Config loading order:
 - `COMPUTER_USE_WINDOWS_AUTH`
 - `COMPUTER_USE_WINDOWS_BLOCKED_APPS`
 - `COMPUTER_USE_WINDOWS_LOG_DIR`
+- `COMPUTER_USE_WINDOWS_SCREENSHOTS_DIR`
 - `COMPUTER_USE_WINDOWS_FORCE_STOP_HOTKEY`
 
 Runtime data defaults to `%USERPROFILE%\.computer-use-windows`.
+Logs default to `<OS drive>:\Users\<username>\.computer-use-windows\logs`.
+Screenshots default to `<OS drive>:\Users\<username>\.computer-use-windows\screenshots`.
 
 Runtime subfolders:
 

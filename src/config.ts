@@ -6,8 +6,10 @@ import {
   defaultAuth,
   defaultForceStopHotkey,
   defaultHost,
+  defaultLogDir,
   defaultPort,
   defaultRuntimeDir,
+  defaultScreenshotsDir,
   screenshotMaxBytes,
   screenshotMaxSide,
 } from './defaults';
@@ -18,7 +20,9 @@ export type ServerConfig = {
   auth: string;
   host: string;
   port: number;
+  logDir: string;
   runtimeDir: string;
+  screenshotsDir: string;
   blockedApps: string[];
   forceStopHotkey: string;
   disableForceStopHotkey: boolean;
@@ -66,7 +70,9 @@ export const loadConfig = (): ServerConfig => ({
   auth: envString('COMPUTER_USE_WINDOWS_AUTH') || defaultAuth,
   host: envString('COMPUTER_USE_WINDOWS_HOST') || defaultHost,
   port: envNumber('COMPUTER_USE_WINDOWS_PORT', defaultPort),
-  runtimeDir: path.resolve(envString('COMPUTER_USE_WINDOWS_LOG_DIR') || defaultRuntimeDir()),
+  logDir: path.resolve(envString('COMPUTER_USE_WINDOWS_LOG_DIR') || defaultLogDir()),
+  runtimeDir: path.resolve(defaultRuntimeDir()),
+  screenshotsDir: path.resolve(envString('COMPUTER_USE_WINDOWS_SCREENSHOTS_DIR') || defaultScreenshotsDir()),
   blockedApps: splitComma(envString('COMPUTER_USE_WINDOWS_BLOCKED_APPS')),
   forceStopHotkey: envString('COMPUTER_USE_WINDOWS_FORCE_STOP_HOTKEY') || defaultForceStopHotkey,
   disableForceStopHotkey: false,
