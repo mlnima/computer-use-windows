@@ -59,13 +59,16 @@ const envNumber = (key: string, fallback: number) => {
   return Number.isFinite(value) && value > 0 ? value : fallback;
 };
 
+const splitComma = (value: string) =>
+  value.split(',').map((entry) => entry.trim()).filter(Boolean);
+
 export const loadConfig = (): ServerConfig => ({
   auth: envString('COMPUTER_USE_WINDOWS_AUTH') || defaultAuth,
   host: envString('COMPUTER_USE_WINDOWS_HOST') || defaultHost,
   port: envNumber('COMPUTER_USE_WINDOWS_PORT', defaultPort),
-  runtimeDir: path.resolve(defaultRuntimeDir()),
-  blockedApps: [],
-  forceStopHotkey: defaultForceStopHotkey,
+  runtimeDir: path.resolve(envString('COMPUTER_USE_WINDOWS_LOG_DIR') || defaultRuntimeDir()),
+  blockedApps: splitComma(envString('COMPUTER_USE_WINDOWS_BLOCKED_APPS')),
+  forceStopHotkey: envString('COMPUTER_USE_WINDOWS_FORCE_STOP_HOTKEY') || defaultForceStopHotkey,
   disableForceStopHotkey: false,
   screenshotMaxBytes,
   screenshotMaxSide,
