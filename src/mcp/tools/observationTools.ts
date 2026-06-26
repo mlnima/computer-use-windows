@@ -26,7 +26,7 @@ export const registerObservationTools = (server: McpServer, state: RuntimeState,
     return okResult({
       driver: createInputController().driverStatus(),
       emergencyStopped: state.emergencyStopped,
-      endpoints: { mcp: `http://${config.httpHost}:${config.httpPort}/mcp`, sse: `http://${config.sseHost}:${config.ssePort}/sse` },
+      endpoints: { mcp: `http://${config.host}:${config.port}/mcp`, sse: `http://${config.host}:${config.port}/sse` },
       hostname: os.hostname(),
       lastError: state.lastError,
       machineId: state.machineId,

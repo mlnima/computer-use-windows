@@ -6,9 +6,8 @@ import {
   defaultAuth,
   defaultForceStopHotkey,
   defaultHost,
-  defaultHttpPort,
+  defaultPort,
   defaultRuntimeDir,
-  defaultSsePort,
   screenshotMaxBytes,
   screenshotMaxSide,
 } from './defaults';
@@ -16,12 +15,9 @@ import {
 export type TransportMode = 'all' | 'mcp' | 'sse' | 'stdio';
 
 export type ServerConfig = {
-  httpAuth: string;
-  httpHost: string;
-  httpPort: number;
-  sseAuth: string;
-  sseHost: string;
-  ssePort: number;
+  auth: string;
+  host: string;
+  port: number;
   runtimeDir: string;
   blockedApps: string[];
   forceStopHotkey: string;
@@ -70,12 +66,9 @@ const splitComma = (value: string) =>
   value.split(',').map((entry) => entry.trim()).filter(Boolean);
 
 export const loadConfig = (): ServerConfig => ({
-  httpAuth: envString('COMPUTER_USE_WINDOWS_HTTP_AUTH') || defaultAuth,
-  httpHost: envString('COMPUTER_USE_WINDOWS_HTTP_HOST') || defaultHost,
-  httpPort: envNumber('COMPUTER_USE_WINDOWS_HTTP_PORT', defaultHttpPort),
-  sseAuth: envString('COMPUTER_USE_WINDOWS_SSE_AUTH') || defaultAuth,
-  sseHost: envString('COMPUTER_USE_WINDOWS_SSE_HOST') || defaultHost,
-  ssePort: envNumber('COMPUTER_USE_WINDOWS_SSE_PORT', defaultSsePort),
+  auth: envString('COMPUTER_USE_WINDOWS_AUTH') || defaultAuth,
+  host: envString('COMPUTER_USE_WINDOWS_HOST') || defaultHost,
+  port: envNumber('COMPUTER_USE_WINDOWS_PORT', defaultPort),
   runtimeDir: path.resolve(envString('COMPUTER_USE_WINDOWS_LOG_DIR') || defaultRuntimeDir()),
   blockedApps: splitComma(envString('COMPUTER_USE_WINDOWS_BLOCKED_APPS')),
   forceStopHotkey: envString('COMPUTER_USE_WINDOWS_FORCE_STOP_HOTKEY') || defaultForceStopHotkey,

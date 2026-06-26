@@ -22,6 +22,8 @@ https://github.com/mlnima/computer-use-windows.git
 - SSE: `computer-use-windows --transport sse`
 - Both HTTP transports on one server: `computer-use-windows --transport all`
 
+Every server transport mode exposes both `/mcp` and `/sse` on the same host, port, and auth token. STDIO is unchanged.
+
 The Streamable HTTP endpoint is:
 
 ```text
@@ -33,7 +35,7 @@ Codex Desktop should use the URL ending in `/mcp`.
 SSE uses:
 
 ```text
-http://127.0.0.1:7333/sse
+http://127.0.0.1:7332/sse
 ```
 
 Each Windows computer should run its own server process. Add each computer as a separate MCP entry, for example `windows-office`, `windows-lab`, or `windows-gpu`. Use the `machineId`, `hostname`, and `username` fields from `computer_status` to avoid mixing actions across computers.
@@ -71,13 +73,13 @@ SSE:
 {
   "mcpServers": {
     "windows-pc-1-sse": {
-      "url": "http://127.0.0.1:7333/sse"
+      "url": "http://127.0.0.1:7332/sse"
     }
   }
 }
 ```
 
-If `COMPUTER_USE_WINDOWS_HTTP_AUTH` or `COMPUTER_USE_WINDOWS_SSE_AUTH` is set, configure the MCP client to send:
+If `COMPUTER_USE_WINDOWS_AUTH` is set, configure the MCP client to send:
 
 ```text
 Authorization: Bearer <token>
@@ -93,12 +95,9 @@ Config loading order:
 - If package-root `.env` does not exist, system or launcher-provided environment variables are used.
 - Missing values fall back to built-in defaults.
 
-- `COMPUTER_USE_WINDOWS_HTTP_HOST`
-- `COMPUTER_USE_WINDOWS_HTTP_PORT`
-- `COMPUTER_USE_WINDOWS_HTTP_AUTH`
-- `COMPUTER_USE_WINDOWS_SSE_HOST`
-- `COMPUTER_USE_WINDOWS_SSE_PORT`
-- `COMPUTER_USE_WINDOWS_SSE_AUTH`
+- `COMPUTER_USE_WINDOWS_HOST`
+- `COMPUTER_USE_WINDOWS_PORT`
+- `COMPUTER_USE_WINDOWS_AUTH`
 - `COMPUTER_USE_WINDOWS_BLOCKED_APPS`
 - `COMPUTER_USE_WINDOWS_LOG_DIR`
 - `COMPUTER_USE_WINDOWS_SCREENSHOT_MAX_BYTES`

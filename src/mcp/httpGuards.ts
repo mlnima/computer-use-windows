@@ -35,9 +35,9 @@ export const rejectProtocolVersion = (req: Request, res: Response) => {
 };
 
 export const mcpGuard = (config: ServerConfig, req: Request, res: Response) =>
-  rejectOrigin(req, res, config.httpHost, config.httpPort)
+  rejectOrigin(req, res, config.host, config.port)
   || rejectProtocolVersion(req, res)
-  || rejectUnauthorized(req, res, config.httpAuth, config.httpHost);
+  || rejectUnauthorized(req, res, config.auth, config.host);
 
 export const sseGuard = (config: ServerConfig, req: Request, res: Response) =>
-  rejectOrigin(req, res, config.sseHost, config.ssePort) || rejectUnauthorized(req, res, config.sseAuth, config.sseHost);
+  rejectOrigin(req, res, config.host, config.port) || rejectUnauthorized(req, res, config.auth, config.host);
