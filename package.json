@@ -1,0 +1,40 @@
+{
+  "name": "computer-use-windows",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/main.js",
+  "types": "./dist/main.d.ts",
+  "bin": {
+    "computer-use-windows": "./dist/main.js"
+  },
+  "scripts": {
+    "build": "tsup src/main.ts --format esm --target node20 --dts --clean",
+    "typecheck": "tsc --noEmit",
+    "start:stdio": "node ./dist/main.js --transport stdio",
+    "start:mcp": "node ./dist/main.js --transport mcp",
+    "start:sse": "node ./dist/main.js --transport sse",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@lydell/node-pty": "^1.2.0-beta.12",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "express": "^4.21.2",
+    "node-interception": "^2.0.4",
+    "sharp": "^0.34.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.7",
+    "tsup": "^8.5.1",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

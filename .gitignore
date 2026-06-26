@@ -1,0 +1,15 @@
+.computer-use-windows/
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+logs/
+screenshots/
+traces/
+terminal/
+resources/
+clipboard/
+*.log
+*.tmp
+*.tsbuildinfo

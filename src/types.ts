@@ -1,0 +1,76 @@
+import type { IPty } from '@lydell/node-pty';
+
+export type Bounds = { bottom: number; left: number; right: number; top: number };
+export type Point = { x: number; y: number };
+
+export type MonitorInfo = {
+  bounds: Bounds;
+  id: string;
+  isPrimary: boolean;
+  name: string;
+  workArea: Bounds;
+};
+
+export type WindowInfo = {
+  bounds: Bounds;
+  className: string;
+  executablePath: string;
+  handle: string;
+  isForeground: boolean;
+  isFullscreen: boolean;
+  isMinimized: boolean;
+  isOffscreen: boolean;
+  processId: number;
+  processName: string;
+  title: string;
+};
+
+export type AccessibilityNode = {
+  automationId: string;
+  bounds: Bounds;
+  center: Point;
+  className: string;
+  enabled: boolean;
+  focused: boolean;
+  id: string;
+  name: string;
+  role: string;
+  value: string;
+};
+
+export type Observation = {
+  accessibilityPreview: AccessibilityNode[];
+  accessibilityResourceIds: string[];
+  capturedAt: string;
+  cursor: Point | null;
+  focusedWindow: WindowInfo | null;
+  id: string;
+  machineId: string;
+  monitorResourceId: string;
+  monitors: MonitorInfo[];
+  screenshotResourceId: string;
+  securityPrompt: { detected: boolean; reason: string | null; windowHandle: string | null };
+  selectedWindows: WindowInfo[];
+  sessionId: string;
+  token: string;
+  virtualDesktopBounds: Bounds;
+  windowsResourceId: string;
+};
+
+export type ResourceRecord = {
+  createdAt: string;
+  id: string;
+  mimeType: string;
+  name: string;
+  text?: string;
+  bytes?: Buffer;
+};
+
+export type TerminalSession = {
+  buffer: string;
+  closed: boolean;
+  createdAt: string;
+  id: string;
+  lastReadOffset: number;
+  pty: IPty;
+};
