@@ -54,26 +54,20 @@ const envFile = parseEnvFile();
 const envString = (key: string) =>
   hasEnvFile ? envFile[key]?.trim() || '' : process.env[key]?.trim() || '';
 
-const envBoolean = (key: string) =>
-  ['1', 'true', 'yes'].includes(envString(key).toLowerCase());
-
 const envNumber = (key: string, fallback: number) => {
   const value = Number(envString(key));
   return Number.isFinite(value) && value > 0 ? value : fallback;
 };
 
-const splitComma = (value: string) =>
-  value.split(',').map((entry) => entry.trim()).filter(Boolean);
-
 export const loadConfig = (): ServerConfig => ({
   auth: envString('COMPUTER_USE_WINDOWS_AUTH') || defaultAuth,
   host: envString('COMPUTER_USE_WINDOWS_HOST') || defaultHost,
   port: envNumber('COMPUTER_USE_WINDOWS_PORT', defaultPort),
-  runtimeDir: path.resolve(envString('COMPUTER_USE_WINDOWS_LOG_DIR') || defaultRuntimeDir()),
-  blockedApps: splitComma(envString('COMPUTER_USE_WINDOWS_BLOCKED_APPS')),
-  forceStopHotkey: envString('COMPUTER_USE_WINDOWS_FORCE_STOP_HOTKEY') || defaultForceStopHotkey,
-  disableForceStopHotkey: envBoolean('COMPUTER_USE_WINDOWS_DISABLE_FORCE_STOP_HOTKEY'),
-  screenshotMaxBytes: envNumber('COMPUTER_USE_WINDOWS_SCREENSHOT_MAX_BYTES', screenshotMaxBytes),
-  screenshotMaxSide: envNumber('COMPUTER_USE_WINDOWS_SCREENSHOT_MAX_SIDE', screenshotMaxSide),
-  accessibilityMaxNodes: envNumber('COMPUTER_USE_WINDOWS_ACCESSIBILITY_MAX_NODES', accessibilityMaxNodes),
+  runtimeDir: path.resolve(defaultRuntimeDir()),
+  blockedApps: [],
+  forceStopHotkey: defaultForceStopHotkey,
+  disableForceStopHotkey: false,
+  screenshotMaxBytes,
+  screenshotMaxSide,
+  accessibilityMaxNodes,
 });
