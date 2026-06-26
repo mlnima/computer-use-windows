@@ -87,6 +87,12 @@ Do not expose `0.0.0.0` without an auth token and a trusted network.
 
 ## Environment
 
+Config loading order:
+
+- If package-root `.env` exists, values are read from that file.
+- If package-root `.env` does not exist, system or launcher-provided environment variables are used.
+- Missing values fall back to built-in defaults.
+
 - `COMPUTER_USE_WINDOWS_HTTP_HOST`
 - `COMPUTER_USE_WINDOWS_HTTP_PORT`
 - `COMPUTER_USE_WINDOWS_HTTP_AUTH`

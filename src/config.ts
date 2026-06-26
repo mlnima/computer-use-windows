@@ -34,6 +34,7 @@ export type ServerConfig = {
 const envPrefix = 'COMPUTER_USE_WINDOWS_';
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const envFilePath = path.join(moduleDir, '..', '.env');
+const hasEnvFile = fs.existsSync(envFilePath);
 
 const parseEnvFile = () => {
   if (!fs.existsSync(envFilePath)) return {};
@@ -55,7 +56,7 @@ const parseEnvFile = () => {
 const envFile = parseEnvFile();
 
 const envString = (key: string) =>
-  process.env[key]?.trim() || envFile[key]?.trim() || '';
+  hasEnvFile ? envFile[key]?.trim() || '' : process.env[key]?.trim() || '';
 
 const envBoolean = (key: string) =>
   ['1', 'true', 'yes'].includes(envString(key).toLowerCase());
