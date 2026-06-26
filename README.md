@@ -106,6 +106,7 @@ Config loading order:
 Runtime data defaults to `%USERPROFILE%\.computer-use-windows`.
 Logs default to `<OS drive>:\Users\<username>\.computer-use-windows\logs`.
 Screenshots default to `<OS drive>:\Users\<username>\.computer-use-windows\screenshots`.
+Relative log and screenshot directory values resolve under `%USERPROFILE%\.computer-use-windows`, not the package directory.
 
 Runtime subfolders:
 
