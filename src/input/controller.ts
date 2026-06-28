@@ -1,9 +1,9 @@
 import { setTimeout as sleep } from 'node:timers/promises';
-import type { Point } from '../types';
-import { getCursorPosition, setCursorPosition } from '../windows/windows';
+import { getCursorPosition } from '../windows/windows';
 import { keyMap, type KeyEntry } from './keyMap';
-import { createHumanMousePath } from './mousePath';
 import { interception, keyboardDevice, mouseButtons, mouseDevice, mouseFlags, sendKey, sendMouse, type MouseButton } from './interception';
+import { moveMouseExact } from './exactMouse';
+import { moveMouseHuman } from './humanMouse';
 
 const heldButtons = new Set<MouseButton>();
 const heldKeys = new Set<KeyEntry>();
@@ -78,15 +78,10 @@ export const createInputController = (cancelled = () => false) => ({
   keyUp: async (key: string) => keyUp(keyEntry(key)),
   mouseDown: async (button: MouseButton) => mouseDown(button),
   mouseUp: async (button: MouseButton) => mouseUp(button),
-  moveAbsolute: async (x: number, y: number) => await setCursorPosition({ x, y }),
+  moveAbsolute: async (x: number, y: number) => await moveMouseExact({ x, y }, cancelled),
   moveDirect: async (dx: number, dy: number) => sendMouse(0, Math.round(dx), Math.round(dy)),
-  moveHuman: async (dx: number, dy: number) => {
-    for (const step of createHumanMousePath(dx, dy)) {
-      if (cancelled()) throw new Error('Action cancelled.');
-      sendMouse(0, step.dx, step.dy);
-      await sleep(step.delayMs);
-    }
-  },
+  moveHuman: async (x: number, y: number) => await moveMouseHuman({ x, y }, cancelled),
+  moveTo: async (x: number, y: number) => await moveMouseExact({ x, y }, cancelled),
   press: async (key: string) => await pressEntry(keyEntry(key)),
   pressCombo: async (keys: string[]) => {
     const entries = keys.map(keyEntry);

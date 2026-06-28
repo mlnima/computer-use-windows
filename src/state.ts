@@ -45,6 +45,12 @@ export const addLastAction = (state: RuntimeState, action: Record<string, unknow
   state.lastActions = state.lastActions.slice(0, 100);
 };
 
+export const markObservationConsumed = (state: RuntimeState) => {
+  if (!state.latestObservation) return;
+  state.latestObservation.consumed = true;
+  state.latestObservation.stale = true;
+};
+
 export const assertCanMutate = (state: RuntimeState) => {
   if (state.paused) throw new Error('Session is paused.');
   if (state.emergencyStopped) throw new Error('Emergency stop is active.');

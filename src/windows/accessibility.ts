@@ -1,6 +1,27 @@
-import type { AccessibilityNode } from '../types';
+import type { AccessibilityNode, Bounds, Point, ScreenshotInfo } from '../types';
 import { psString, runPowerShell, runPowerShellJson } from '../util/powershell';
 import { normalizeArray, toBounds, toPoint } from './value';
+
+const boundsWidth = (bounds: Bounds) =>
+  Math.max(1, bounds.right - bounds.left);
+
+const boundsHeight = (bounds: Bounds) =>
+  Math.max(1, bounds.bottom - bounds.top);
+
+const localPoint = (point: Point, screenshot: ScreenshotInfo): Point => ({
+  x: Math.round((point.x - screenshot.bounds.left) * (screenshot.width / boundsWidth(screenshot.bounds))),
+  y: Math.round((point.y - screenshot.bounds.top) * (screenshot.height / boundsHeight(screenshot.bounds))),
+});
+
+const localBounds = (bounds: Bounds, screenshot: ScreenshotInfo): Bounds => ({
+  bottom: localPoint({ x: bounds.right, y: bounds.bottom }, screenshot).y,
+  left: localPoint({ x: bounds.left, y: bounds.top }, screenshot).x,
+  right: localPoint({ x: bounds.right, y: bounds.bottom }, screenshot).x,
+  top: localPoint({ x: bounds.left, y: bounds.top }, screenshot).y,
+});
+
+const pointInsideScreenshot = (point: Point, screenshot?: ScreenshotInfo) =>
+  !screenshot || (point.x >= 0 && point.y >= 0 && point.x < screenshot.width && point.y < screenshot.height);
 
 const accessibilityScript = (handle: string, maxNodes: number) => `
 Add-Type -AssemblyName UIAutomationClient
@@ -18,23 +39,30 @@ $items.Add([PSCustomObject]@{id=("uia-"+($items.Count+1));role=$c.ControlType.Pr
 }catch{} } }
 $items.ToArray()|ConvertTo-Json -Depth 6 -Compress`;
 
-export const getAccessibility = async (handle: string, maxNodes: number) => {
+export const getAccessibility = async (handle: string, maxNodes: number, screenshot?: ScreenshotInfo) => {
   const raw = await runPowerShellJson<Record<string, unknown> | Record<string, unknown>[]>(
     accessibilityScript(handle, maxNodes),
     [],
   );
-  return normalizeArray(raw).map((entry): AccessibilityNode => ({
-    automationId: String(entry.automationId || ''),
-    bounds: toBounds(entry.bounds),
-    center: toPoint(entry.center),
-    className: String(entry.className || ''),
-    enabled: entry.enabled === true,
-    focused: entry.focused === true,
-    id: String(entry.id || ''),
-    name: String(entry.name || ''),
-    role: String(entry.role || ''),
-    value: String(entry.value || ''),
-  }));
+  return normalizeArray(raw).map((entry): AccessibilityNode => {
+    const globalBounds = toBounds(entry.bounds);
+    const globalCenter = toPoint(entry.center);
+    const center = screenshot ? localPoint(globalCenter, screenshot) : globalCenter;
+    return {
+      automationId: String(entry.automationId || ''),
+      bounds: screenshot ? localBounds(globalBounds, screenshot) : globalBounds,
+      center,
+      className: String(entry.className || ''),
+      enabled: entry.enabled === true,
+      focused: entry.focused === true,
+      globalBounds,
+      globalCenter,
+      id: String(entry.id || ''),
+      name: String(entry.name || ''),
+      role: String(entry.role || ''),
+      value: String(entry.value || ''),
+    };
+  }).filter((node) => pointInsideScreenshot(node.center, screenshot));
 };
 
 export const invokeAccessibility = async (handle: string, nodeId: string, action: string, value = '') => {

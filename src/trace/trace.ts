@@ -4,12 +4,37 @@ import type { ServerConfig } from '../config';
 import type { RuntimeState } from '../state';
 import { addTextResource } from '../resources/store';
 
+const runtimeDirs = ['traces', 'terminal', 'resources', 'clipboard'];
+
+const runtimeChildPath = (config: ServerConfig, target: string) => {
+  const runtime = path.resolve(config.runtimeDir);
+  const resolved = path.resolve(target);
+  const relative = path.relative(runtime, resolved);
+  if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+    throw new Error(`Refusing to manage runtime path outside ${runtime}: ${resolved}`);
+  }
+  return resolved;
+};
+
+const resetDir = (dir: string) => {
+  fs.rmSync(dir, { force: true, recursive: true });
+  fs.mkdirSync(dir, { recursive: true });
+};
+
 export const ensureTraceDirs = (config: ServerConfig) => {
   fs.mkdirSync(config.logDir, { recursive: true });
   fs.mkdirSync(config.screenshotsDir, { recursive: true });
-  for (const dir of ['traces', 'terminal', 'resources', 'clipboard']) {
+  for (const dir of runtimeDirs) {
     fs.mkdirSync(path.join(config.runtimeDir, dir), { recursive: true });
   }
+};
+
+export const prepareRuntimeDirs = (config: ServerConfig) => {
+  resetDir(runtimeChildPath(config, config.screenshotsDir));
+  for (const dir of runtimeDirs) {
+    resetDir(runtimeChildPath(config, path.join(config.runtimeDir, dir)));
+  }
+  ensureTraceDirs(config);
 };
 
 const logPath = (config: ServerConfig) =>

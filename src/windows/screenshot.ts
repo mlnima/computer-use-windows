@@ -84,6 +84,7 @@ const captureWindowScreenshot = async (state: RuntimeState, config: ServerConfig
   return {
     bounds,
     byteLength: normalized.buffer.byteLength,
+    coordinateSpace: 'screenshot',
     height: normalized.height,
     mimeType: normalized.mimeType,
     resourceId: addBytesResource(state, path.basename(file), normalized.mimeType, normalized.buffer, 'screenshots'),

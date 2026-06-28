@@ -97,14 +97,12 @@ Config loading order:
 - `COMPUTER_USE_WINDOWS_PORT`
 - `COMPUTER_USE_WINDOWS_AUTH`
 - `COMPUTER_USE_WINDOWS_BLOCKED_APPS`
-- `COMPUTER_USE_WINDOWS_LOG_DIR`
-- `COMPUTER_USE_WINDOWS_SCREENSHOTS_DIR`
 - `COMPUTER_USE_WINDOWS_FORCE_STOP_HOTKEY`
 
-Runtime data defaults to `%USERPROFILE%\.computer-use-windows`.
-Logs default to `<OS drive>:\Users\<username>\.computer-use-windows\logs`.
-Screenshots default to `<OS drive>:\Users\<username>\.computer-use-windows\screenshots`.
-If `COMPUTER_USE_WINDOWS_LOG_DIR` or `COMPUTER_USE_WINDOWS_SCREENSHOTS_DIR` is set to an absolute path, that exact path is used. Relative log and screenshot directory values resolve under `%USERPROFILE%\.computer-use-windows`, not the package directory.
+Runtime data is fixed to `<OS drive>:\Users\<username>\.computer-use-windows`.
+Logs are written to `<OS drive>:\Users\<username>\.computer-use-windows\logs`.
+Screenshots are written to `<OS drive>:\Users\<username>\.computer-use-windows\screenshots`.
+Screenshots and volatile runtime folders are cleared when the server starts.
 
 Other runtime subfolders:
 

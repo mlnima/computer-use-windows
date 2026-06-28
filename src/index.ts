@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { loadConfig, type TransportMode } from './config';
-import { ensureTraceDirs } from './trace/trace';
+import { prepareRuntimeDirs } from './trace/trace';
 import { startTransport } from './mcp/transports';
 
 const validModes = new Set<TransportMode>(['all', 'mcp', 'sse', 'stdio']);
@@ -15,7 +15,7 @@ const transportMode = (): TransportMode => {
 
 const main = async () => {
   const config = loadConfig();
-  ensureTraceDirs(config);
+  prepareRuntimeDirs(config);
   await startTransport(config, transportMode());
 };
 

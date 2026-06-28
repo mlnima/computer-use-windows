@@ -28,6 +28,7 @@ export type WindowInfo = {
 export type ScreenshotInfo = {
   bounds: Bounds;
   byteLength: number;
+  coordinateSpace: 'screenshot';
   height: number;
   mimeType: 'image/png' | 'image/jpeg';
   resourceId: string;
@@ -42,6 +43,8 @@ export type AccessibilityNode = {
   className: string;
   enabled: boolean;
   focused: boolean;
+  globalBounds: Bounds;
+  globalCenter: Point;
   id: string;
   name: string;
   role: string;
@@ -52,6 +55,7 @@ export type Observation = {
   accessibilityPreview: AccessibilityNode[];
   accessibilityResourceIds: string[];
   capturedAt: string;
+  consumed: boolean;
   cursor: Point | null;
   focusedWindow: WindowInfo | null;
   id: string;
@@ -64,6 +68,7 @@ export type Observation = {
   securityPrompt: { detected: boolean; reason: string | null; windowHandle: string | null };
   selectedWindows: WindowInfo[];
   sessionId: string;
+  stale: boolean;
   token: string;
   virtualDesktopBounds: Bounds;
   windowsResourceId: string;

@@ -12,8 +12,22 @@ export const screenshotMaxSide = 2000;
 export const accessibilityMaxNodes = 160;
 export const maxInlineTextBytes = 64 * 1024;
 
+const windowsUsername = () =>
+  os.userInfo().username || process.env.USERNAME || 'Default';
+
+const windowsDriveRoot = () => {
+  const windowsRoot = process.env.SystemRoot || process.env.windir || '';
+  const systemDrive = process.env.SystemDrive || '';
+  return path.parse(windowsRoot).root || (systemDrive ? `${systemDrive}\\` : 'C:\\');
+};
+
+const userHomeDir = () =>
+  process.platform === 'win32'
+    ? path.join(windowsDriveRoot(), 'Users', windowsUsername())
+    : os.homedir();
+
 export const defaultRuntimeDir = () =>
-  path.join(os.homedir(), '.computer-use-windows');
+  path.join(userHomeDir(), '.computer-use-windows');
 
 export const defaultLogDir = () =>
   path.join(defaultRuntimeDir(), 'logs');

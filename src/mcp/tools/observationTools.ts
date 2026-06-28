@@ -6,7 +6,7 @@ import type { RuntimeState } from '../../state';
 import { assertCanMutate, setLastError } from '../../state';
 import { getAccessibility, invokeAccessibility } from '../../windows/accessibility';
 import { listMonitors } from '../../windows/monitors';
-import { focusWindow, getWindowBounds, listWindows, moveWindow } from '../../windows/windows';
+import { ensureForegroundWindow, foregroundWindowStatus, getWindowBounds, listWindows, moveWindow } from '../../windows/windows';
 import { createInputController } from '../../input/controller';
 import { createObservation } from '../../observation/observe';
 import { addTextResource, readResourceByUri } from '../../resources/store';
@@ -51,8 +51,12 @@ export const registerObservationTools = (server: McpServer, state: RuntimeState,
     const windows = await listWindows();
     return okResult({ nextCursor: cursor + limit < windows.length ? cursor + limit : null, windows: windows.slice(cursor, cursor + limit) });
   });
-  server.registerTool('focus_window', { description: 'Focus a window by handle.', inputSchema: { handle: z.string() } }, async ({ handle }) => {
-    try { assertCanMutate(state); await focusWindow(handle); return okResult({ handle, machineId: state.machineId }); } catch (error) { setLastError(state, error); return toolError(error); }
+  server.registerTool('is_window_foreground', { description: 'Check whether a window handle is the current foreground window.', inputSchema: { handle: z.string() } }, async ({ handle }) => {
+    const status = await foregroundWindowStatus(handle);
+    return okResult({ handle, machineId: state.machineId, ...status });
+  });
+  server.registerTool('focus_window', { description: 'Bring a window to foreground by handle and verify it became foreground.', inputSchema: { handle: z.string() } }, async ({ handle }) => {
+    try { assertCanMutate(state); return okResult({ handle, machineId: state.machineId, ...(await ensureForegroundWindow(handle)) }); } catch (error) { setLastError(state, error); return toolError(error); }
   });
   server.registerTool('move_window', { description: 'Move and optionally resize a window.', inputSchema: { handle: z.string(), height: z.number().optional(), monitorId: z.string().optional(), width: z.number().optional(), x: z.number(), y: z.number() } }, async ({ handle, height, width, x, y }) => {
     assertCanMutate(state);

@@ -56,7 +56,7 @@ const parseEnvFile = () => {
 const envFile = parseEnvFile();
 
 const envString = (key: string) =>
-  hasEnvFile ? envFile[key]?.trim() || '' : process.env[key]?.trim() || '';
+  process.env[key]?.trim() || (hasEnvFile ? envFile[key]?.trim() || '' : '');
 
 const envNumber = (key: string, fallback: number) => {
   const value = Number(envString(key));
@@ -66,18 +66,13 @@ const envNumber = (key: string, fallback: number) => {
 const splitComma = (value: string) =>
   value.split(',').map((entry) => entry.trim()).filter(Boolean);
 
-const envPath = (key: string, fallback: string) => {
-  const value = envString(key) || fallback;
-  return path.resolve(path.isAbsolute(value) ? value : path.join(defaultRuntimeDir(), value));
-};
-
 export const loadConfig = (): ServerConfig => ({
   auth: envString('COMPUTER_USE_WINDOWS_AUTH') || defaultAuth,
   host: envString('COMPUTER_USE_WINDOWS_HOST') || defaultHost,
   port: envNumber('COMPUTER_USE_WINDOWS_PORT', defaultPort),
-  logDir: envPath('COMPUTER_USE_WINDOWS_LOG_DIR', defaultLogDir()),
+  logDir: defaultLogDir(),
   runtimeDir: path.resolve(defaultRuntimeDir()),
-  screenshotsDir: envPath('COMPUTER_USE_WINDOWS_SCREENSHOTS_DIR', defaultScreenshotsDir()),
+  screenshotsDir: defaultScreenshotsDir(),
   blockedApps: splitComma(envString('COMPUTER_USE_WINDOWS_BLOCKED_APPS')),
   forceStopHotkey: envString('COMPUTER_USE_WINDOWS_FORCE_STOP_HOTKEY') || defaultForceStopHotkey,
   disableForceStopHotkey: false,

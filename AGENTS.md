@@ -11,3 +11,4 @@
 - Stdio mode must write diagnostics only to stderr.
 - Code files must stay under 300 lines.
 - Screenshots must use selected window/app bounds like `browser-use-native-windows`; never send full virtual desktop or all-monitor screenshots to models. Multiple selected windows must return multiple screenshot resources.
+- no specifict application name or information must be in the code base, this is a general use computeruse mcp server and must not have any name or brand or hard coded information about any application which are native or none native to the windows.
