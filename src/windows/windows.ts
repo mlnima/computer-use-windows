@@ -1,4 +1,4 @@
-import type { Bounds, WindowInfo } from '../types';
+import type { Bounds, Point, WindowInfo } from '../types';
 import { psString, runPowerShell, runPowerShellJson } from '../util/powershell';
 import { winApiSource } from './desktopScripts';
 import { normalizeArray, toBounds, toWindow } from './value';
@@ -57,6 +57,13 @@ export const getCursorPosition = async () =>
 Add-Type -AssemblyName System.Windows.Forms
 $p=[System.Windows.Forms.Cursor]::Position
 [PSCustomObject]@{x=$p.X;y=$p.Y}|ConvertTo-Json -Compress`, { x: 0, y: 0 });
+
+export const setCursorPosition = async (point: Point) => {
+  await runPowerShell(`
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+[System.Windows.Forms.Cursor]::Position=New-Object System.Drawing.Point(${Math.round(point.x)},${Math.round(point.y)})`);
+};
 
 export const getWindowBounds = async (handle: string) => {
   const raw = await runPowerShellJson<Record<string, unknown> | null>(`

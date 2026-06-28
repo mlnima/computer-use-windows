@@ -77,13 +77,13 @@ SSE:
 }
 ```
 
-If `COMPUTER_USE_WINDOWS_AUTH` is set, configure the MCP client to send:
+If `COMPUTER_USE_WINDOWS_AUTH` is changed from `change.me`, configure the MCP client to send:
 
 ```text
 Authorization: Bearer <token>
 ```
 
-Do not expose `0.0.0.0` without an auth token and a trusted network.
+When `COMPUTER_USE_WINDOWS_HOST` is `0.0.0.0`, `COMPUTER_USE_WINDOWS_AUTH` must be changed from `change.me` before the server accepts requests. Do not expose `0.0.0.0` outside a trusted network.
 
 ## Environment
 
@@ -104,12 +104,10 @@ Config loading order:
 Runtime data defaults to `%USERPROFILE%\.computer-use-windows`.
 Logs default to `<OS drive>:\Users\<username>\.computer-use-windows\logs`.
 Screenshots default to `<OS drive>:\Users\<username>\.computer-use-windows\screenshots`.
-Relative log and screenshot directory values resolve under `%USERPROFILE%\.computer-use-windows`, not the package directory.
+If `COMPUTER_USE_WINDOWS_LOG_DIR` or `COMPUTER_USE_WINDOWS_SCREENSHOTS_DIR` is set to an absolute path, that exact path is used. Relative log and screenshot directory values resolve under `%USERPROFILE%\.computer-use-windows`, not the package directory.
 
-Runtime subfolders:
+Other runtime subfolders:
 
-- `logs`
-- `screenshots`
 - `traces`
 - `terminal`
 - `resources`

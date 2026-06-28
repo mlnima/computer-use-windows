@@ -10,3 +10,4 @@
 - Do not build prompt markdown with arrays, `.join`, or `\n` chains.
 - Stdio mode must write diagnostics only to stderr.
 - Code files must stay under 300 lines.
+- Screenshots must use selected window/app bounds like `browser-use-native-windows`; never send full virtual desktop or all-monitor screenshots to models. Multiple selected windows must return multiple screenshot resources.

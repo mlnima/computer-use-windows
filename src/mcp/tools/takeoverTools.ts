@@ -9,6 +9,8 @@ import { okResult } from '../toolResults';
 export const registerTakeoverTools = (server: McpServer, state: RuntimeState, config: ServerConfig) => {
   server.registerTool('pause_session', { description: 'Pause new non-emergency actions.' }, async () => {
     state.paused = true;
+    state.actionCancelled = true;
+    await createInputController().releaseAll();
     appendLog(config, { tool: 'pause_session' });
     return okResult({ machineId: state.machineId, paused: true });
   });
@@ -21,6 +23,7 @@ export const registerTakeoverTools = (server: McpServer, state: RuntimeState, co
   server.registerTool('cancel_current_action', { description: 'Request cancellation of the current action.' }, async () => {
     const hadAction = state.currentActionId !== null;
     state.actionCancelled = true;
+    await createInputController().releaseAll();
     appendLog(config, { hadAction, tool: 'cancel_current_action' });
     return okResult({ cancelled: hadAction, machineId: state.machineId });
   });

@@ -14,9 +14,9 @@ import { okResult, textResult, toolError } from '../toolResults';
 
 const observeResult = (state: RuntimeState, observation: Awaited<ReturnType<typeof createObservation>>, inline?: boolean) => {
   const result = { observation };
-  const image = inline ? readResourceByUri(state, observation.screenshotResourceId) : null;
-  return image?.bytes
-    ? { content: [...textResult({ ok: true, ...result }).content, { type: 'image' as const, data: image.bytes.toString('base64'), mimeType: image.mimeType }] }
+  const images = inline ? observation.screenshotResourceIds.map((id) => readResourceByUri(state, id)).filter((image) => image?.bytes) : [];
+  return images.length > 0
+    ? { content: [...textResult({ ok: true, ...result }).content, ...images.map((image) => ({ type: 'image' as const, data: image?.bytes?.toString('base64') || '', mimeType: image?.mimeType || 'image/png' }))] }
     : okResult(result);
 };
 

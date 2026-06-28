@@ -1,6 +1,6 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import type { Point } from '../types';
-import { getCursorPosition } from '../windows/windows';
+import { getCursorPosition, setCursorPosition } from '../windows/windows';
 import { keyMap, type KeyEntry } from './keyMap';
 import { createHumanMousePath } from './mousePath';
 import { interception, keyboardDevice, mouseButtons, mouseDevice, mouseFlags, sendKey, sendMouse, type MouseButton } from './interception';
@@ -60,10 +60,25 @@ export const createInputController = (cancelled = () => false) => ({
     }
   },
   getCursor: async (): Promise<Point> => await getCursorPosition(),
+  holdKey: async (key: string, durationMs: number) => {
+    const entry = keyEntry(key);
+    let down = false;
+    try {
+      keyDown(entry);
+      down = true;
+      for (let waited = 0; waited < durationMs; waited += 50) {
+        if (cancelled()) throw new Error('Action cancelled.');
+        await sleep(Math.min(50, durationMs - waited));
+      }
+    } finally {
+      if (down) keyUp(entry);
+    }
+  },
   keyDown: async (key: string) => keyDown(keyEntry(key)),
   keyUp: async (key: string) => keyUp(keyEntry(key)),
   mouseDown: async (button: MouseButton) => mouseDown(button),
   mouseUp: async (button: MouseButton) => mouseUp(button),
+  moveAbsolute: async (x: number, y: number) => await setCursorPosition({ x, y }),
   moveDirect: async (dx: number, dy: number) => sendMouse(0, Math.round(dx), Math.round(dy)),
   moveHuman: async (dx: number, dy: number) => {
     for (const step of createHumanMousePath(dx, dy)) {
@@ -91,11 +106,18 @@ export const createInputController = (cancelled = () => false) => ({
       try { mouseUp(button); } catch {}
     }
   },
+  scrollHorizontal: async (delta: number) => sendMouse(interception().api.MouseState.H_WHEEL, 0, 0, Math.round(delta)),
   scroll: async (delta: number) => sendMouse(interception().api.MouseState.WHEEL, 0, 0, Math.round(delta)),
   typeText: async (text: string) => {
     for (const char of text) {
       if (cancelled()) throw new Error('Action cancelled.');
       await pressEntry(keyEntry(char));
+    }
+  },
+  wait: async (durationMs: number) => {
+    for (let waited = 0; waited < durationMs; waited += 50) {
+      if (cancelled()) throw new Error('Action cancelled.');
+      await sleep(Math.min(50, durationMs - waited));
     }
   },
 });

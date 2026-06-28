@@ -4,7 +4,7 @@ import type { RuntimeState } from '../state';
 import { addTextResource } from '../resources/store';
 import { getAccessibility } from '../windows/accessibility';
 import { listMonitors } from '../windows/monitors';
-import { captureScreenshotResource } from '../windows/screenshot';
+import { captureScreenshotResources } from '../windows/screenshot';
 import { getCursorPosition, getForegroundWindow, listWindows } from '../windows/windows';
 
 const detectSecurityPrompt = (windows: Awaited<ReturnType<typeof listWindows>>) => {
@@ -35,11 +35,12 @@ export const createObservation = async (
     getForegroundWindow(),
     getCursorPosition().catch(() => null),
   ]);
-  const screenshotResourceId = await captureScreenshotResource(state, config);
   const windowsResourceId = addTextResource(state, 'windows.json', 'application/json', JSON.stringify(windows, null, 2), 'machines');
   const monitorResourceId = addTextResource(state, 'monitors.json', 'application/json', JSON.stringify(monitors, null, 2), 'machines');
   const handles = params.handles?.length ? params.handles : focusedWindow ? [focusedWindow.handle] : [];
   const selectedWindows = windows.filter((window) => handles.includes(window.handle));
+  const screenshots = await captureScreenshotResources(state, config, selectedWindows, monitors);
+  const screenshotResourceIds = screenshots.map((screenshot) => screenshot.resourceId);
   const accessibility = params.includeAccessibility === false ? [] : await Promise.all(handles.map(async (handle) => {
     const nodes = await getAccessibility(handle, config.accessibilityMaxNodes);
     return {
@@ -57,7 +58,9 @@ export const createObservation = async (
     machineId: state.machineId,
     monitorResourceId,
     monitors,
-    screenshotResourceId,
+    screenshotResourceId: screenshotResourceIds[0] || '',
+    screenshotResourceIds,
+    screenshots,
     securityPrompt: detectSecurityPrompt(windows),
     selectedWindows,
     sessionId: state.sessionId,

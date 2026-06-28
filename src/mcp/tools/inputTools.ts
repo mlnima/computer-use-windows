@@ -17,7 +17,7 @@ export const registerInputTools = (server: McpServer, state: RuntimeState, confi
     try {
       const result = await runComputerAction(state, config, observationToken, action);
       const resourceIds = [
-        result.followUpObservation.screenshotResourceId,
+        ...result.followUpObservation.screenshotResourceIds,
         result.followUpObservation.windowsResourceId,
         result.followUpObservation.monitorResourceId,
         ...result.followUpObservation.accessibilityResourceIds,

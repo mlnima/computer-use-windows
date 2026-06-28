@@ -25,6 +25,16 @@ export type WindowInfo = {
   title: string;
 };
 
+export type ScreenshotInfo = {
+  bounds: Bounds;
+  byteLength: number;
+  height: number;
+  mimeType: 'image/png' | 'image/jpeg';
+  resourceId: string;
+  width: number;
+  windowHandle: string;
+};
+
 export type AccessibilityNode = {
   automationId: string;
   bounds: Bounds;
@@ -49,6 +59,8 @@ export type Observation = {
   monitorResourceId: string;
   monitors: MonitorInfo[];
   screenshotResourceId: string;
+  screenshotResourceIds: string[];
+  screenshots: ScreenshotInfo[];
   securityPrompt: { detected: boolean; reason: string | null; windowHandle: string | null };
   selectedWindows: WindowInfo[];
   sessionId: string;
